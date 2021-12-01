@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/StrangeArcturus/ts-scorer/issues"
   },
-  "homepage": "https://github.com/StrangeArcturus/ts-scorer#readme"
+  "homepage": "https://github.com/StrangeArcturus/ts-scorer#readme",
+  "dependencies": {
+    "@types/node": "^16.11.11",
+    "dotenv": "^10.0.0",
+    "vk-io": "^4.4.0"
+  }
 }
