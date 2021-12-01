@@ -1,0 +1,20 @@
+{
+  "name": "ts-scorer",
+  "version": "1.0.0",
+  "description": "scorer in typescript realisation",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StrangeArcturus/ts-scorer.git"
+  },
+  "author": "Arc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StrangeArcturus/ts-scorer/issues"
+  },
+  "homepage": "https://github.com/StrangeArcturus/ts-scorer#readme"
+}
