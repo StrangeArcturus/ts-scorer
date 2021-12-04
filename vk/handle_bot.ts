@@ -28,7 +28,7 @@ ${indent}Эту, как и другие команды со знаком "!", п
 
 
 
-function handle_message(text: string) {
+function handle_message(text: string)/*: string */ {
     let answer: string = "";
     switch (text) {
         case "start":
@@ -43,9 +43,10 @@ function handle_message(text: string) {
         case "/помощь":
         case "хелп":
         case "/хелп":
-        answer = hello;
+            answer = hello;
         break;
-        
+        default:
+            // TODO
     }
 }
 
