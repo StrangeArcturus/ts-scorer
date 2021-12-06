@@ -2,7 +2,6 @@
 import { Sequelize, QueryTypes } from "sequelize";
 
 import { mkdir } from "fs";
-import { threadId } from "worker_threads";
 
 
 const sequelize: Sequelize = new Sequelize({
@@ -11,7 +10,7 @@ const sequelize: Sequelize = new Sequelize({
 });
 
 
-class AsyncDataBaseConnector {
+export class AsyncDataBaseConnector {
     path: string;
     db_prefix: string;
     sequelize: Sequelize;
@@ -36,8 +35,9 @@ class AsyncDataBaseConnector {
                     type: QueryTypes.SELECT,
                     replacements: [subject.toLowerCase()]
                 })
-        } catch {
+        } catch(error) {
             console.error(`${this.log_prefix} oops, error in database`);
+            throw error;
             return;
         }
         if (!(subjects.length))
@@ -120,7 +120,7 @@ class AsyncDataBaseConnector {
             subjects[1] += scores.toLowerCase();
         }
         try {
-            this.sequelize.query(`
+            await this.sequelize.query(`
             UPDATE ${this.db_prefix}_${user_id}
             SET subject = ?,
                 score = ?`, {
@@ -134,5 +134,141 @@ class AsyncDataBaseConnector {
             return 1;
         }
         console.log(`${this.log_prefix} user's ${user_id} data was updated`);
+    }
+
+
+    async clean_subject(user_id: string | number, subject: string): Promise<number | void> {
+        let subjects: any;
+        try {
+            subjects = await this.sequelize.query(`
+                SELECT * FROM ${this.db_prefix}_${user_id}
+                WHERE subjects = ?
+            `, {
+                type: QueryTypes.SELECT,
+                replacements: [subject.toLowerCase()]
+            });
+        } catch {
+            console.error(
+                `${this.log_prefix} oops, smth goes wrong with get user's ${user_id} subject ${subject}`
+            );
+            return 1;
+        }
+        if (subjects) {
+            subjects[1] = "";
+            try {
+                await this.sequelize.query(`
+                    UPDATE ${this.db_prefix}_${user_id}
+                    SET subject = ?,
+                        score = ?
+                `, {
+                    type: QueryTypes.UPDATE,
+                    replacements: [subjects[0], subjects[1]]
+                });
+            } catch {
+                console.error(
+                    `${this.log_prefix} oops, smth goes wrong with update user's ${user_id} subject ${subject}`
+                );
+                return 1;
+            }
+            console.log(`${this.log_prefix} user's ${user_id} data was updated`);
+        }
+    }
+
+    async clean_all_users_subjects(user_id: string | number): Promise<number | void> {
+        try {
+            await this.sequelize.query(`
+            DELETE FROM ${this.db_prefix}_${user_id}
+            `, {
+                type: QueryTypes.DELETE
+            });
+        } catch {
+            console.error(
+                `${this.log_prefix} oops, smth goes wrong with update user's ${user_id} data`
+            );
+            return 1;
+        }
+    }
+
+    private async __calculate_scores(scores: string): Promise<number> {
+        let filtered_scores: Array<string> = scores.split("").filter(elem => !isNaN(+elem));
+        let result: number = ((...arr: Array<string>): number => {
+            let sum: number = 0;
+            arr.forEach(
+                (elem: string): void => {sum += +elem;}
+            )
+            return sum;
+        })(...filtered_scores) / filtered_scores.length;
+        return result;
+    }
+
+    async now_score(user_id: string | number, subject: string): Promise<number | void> {
+        let subjects: any;
+        try {
+            subjects = await this.sequelize.query(`
+                SELECT * FROM ${this.db_prefix}_${user_id}
+                WHERE subjects = ?
+            `, {
+                type: QueryTypes.SELECT,
+                replacements: [subject.toLowerCase()]
+            });
+        } catch {
+            console.error(
+                `${this.log_prefix} oops, smth goes wrong with get user's ${user_id} subject ${subject}`
+            );
+            return;
+        }
+        if (subjects) {
+            let result: number = await this.__calculate_scores(subjects[1]);
+            return result;
+        } else {
+            console.error(
+                `${this.log_prefix} oops, smth goes wrong with get user's ${user_id} scores`
+            );
+            return;
+        }
+    }
+
+    async predict_scores(user_id: string | number, subject: string, predict_scores: string): Promise<number | void> {
+        let subjects: any;
+        try {
+            subjects = await this.sequelize.query(`
+                SELECT * FROM ${this.db_prefix}_${user_id}
+                WHERE subjects = ?
+            `, {
+                type: QueryTypes.SELECT,
+                replacements: [subject.toLowerCase()]
+            });
+        } catch {
+            console.error(
+                `${this.log_prefix} oops, smth goes wrong with get user's ${user_id} subject ${subject}`
+            );
+            return;
+        }
+        if (subjects) {
+            let result: number = await this.__calculate_scores(subjects[1] + predict_scores);
+            return result;
+        } else {
+            console.error(
+                `${this.log_prefix} oops, smth goes wrong with get user's ${user_id} scores`
+            );
+            return;
+        }
+    }
+
+    async all_subjects_with_scores_as_dict(user_id: string | number): Promise<object | void> {
+        let subjects: any;
+        try {
+            subjects = await this.sequelize.query(`
+                SELECT * FROM ${this.db_prefix}_${user_id}
+            `, {
+                type: QueryTypes.SELECT
+            });
+        } catch {
+            console.error(
+                `${this.log_prefix} oops, smth goes wrong with get all user's ${user_id} scores`
+            );
+            return;
+        }
+        result: Object
     }
 }

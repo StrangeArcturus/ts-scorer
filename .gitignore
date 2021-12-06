@@ -105,3 +105,6 @@ dist
 
 # sqlite database
 db/data.db
+
+# test dir
+test/
