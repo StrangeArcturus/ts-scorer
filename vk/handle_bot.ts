@@ -1,5 +1,4 @@
-import { MessageContext } from 'vk-io/lib';
-import { vk } from './bot';
+import { connector } from './bot';
 
 
 const indent: string = '    ';
@@ -28,9 +27,14 @@ ${indent}Эту, как и другие команды со знаком "!", п
 
 
 
-function handle_message(text: string)/*: string */ {
+export async function handle_message(text: string, user_id: string | number): Promise<string> {
     let answer: string = "";
-    switch (text) {
+    let args: Array<string> = text.toLowerCase().split("\n");
+    let command: any = args.shift();
+    let subject: any = args.shift();
+    let scores: string = args.join(" ");
+    let result: any;
+    switch (command) {
         case "start":
         case "/start":
         case "/старт":
@@ -44,14 +48,47 @@ function handle_message(text: string)/*: string */ {
         case "хелп":
         case "/хелп":
             answer = hello;
-        break;
+            break;
+        case "добавить":
+            result = await connector.add_subject_to_user(user_id, subject, scores ? scores : '');
+            answer = result ?
+                "Упс, что-то пошло не так с добавлением предмета..." :
+                `Предмет ${subject} успешно добавлен в базу данных ${scores ? 'с оценками ' + scores : ''}`;
+            break;
+        case "дописать":
+            result = await connector.add_scores_to_subject(user_id, subject, scores ? scores : '');
+            answer = result ?
+                "Упс, что-то пошло не так с добавлением оценок..." :
+                `Предмет ${subject} успешно добавлен в базу данных ${scores ? 'с оценками ' + scores : ''}`;
+            break;
+        case "очистить":
+            await connector.clean_subject(user_id, subject);
+            answer = `Оценки по предмету ${subject} были успешно и безвозвратно стёрты ^-^`;
+            break;
+        case "стереть_всё":
+            await connector.clean_all_users_subjects(user_id);
+            answer = `Все ваши предметы и оценки по ним успешно удалены ^-^`;
+            break;
+        case "текущий_балл":
+            result = await connector.now_score(user_id, subject);
+            answer = typeof result === "number" ?
+                `Средний балл по вашему предмету ${subject} составляет ${result} баллов` :
+                `Упс, возникла ошибка, возможно, Вы ещё не добавили предметов в базу данных :(`;
+            break;
+        case "предсказать_балл":
+            result = await connector.predict_scores(user_id, subject, scores);
+            answer = result ?
+                `Предсказанный балл по предмету ${subject} с учётом оценок ${scores} составляет ${result}` :
+                `Упс, возникла ошибка, возможно, Вы ещё не добавили предметов в базу данных :(`;
+            break;
+        case "все_предметы":
+            answer = `Ваши оценки по всем добавленным предметам\n\n`
+            answer += await connector.all_subjects_with_scores_as_string_table(user_id);
+            break;
         default:
-            // TODO
+            answer = `Простите, но мне понятны только предписанные команды, а человеческую речь мне не понять :(`;
+            answer += `\nДля помощи -- команды /help help помощь /помощь хелп /хелп`;
+            break;
     }
+    return answer;
 }
-
-
-vk.updates.on("message_new", async (context: MessageContext): Promise<void> => {
-    let text: string | undefined = context?.text;
-    // await  context.send( answer )
-})
