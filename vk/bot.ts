@@ -1,18 +1,17 @@
 import { MessageContext, VK } from 'vk-io';
 
-import { TOKEN, TEST_TOKEN } from './config';
+import { TOKEN_VK as TOKEN } from './config';
 import { handle_message } from './handle_bot';
 import { AsyncDataBaseConnector } from './db/connector';
 
-const isTest: boolean = process.argv[2] === "--test";
 
-console.log(`[VK] bot started in ${isTest ? 'test' : 'product'} mode`);
+console.log(`[VK] bot started in product mode`);
 
 export const vk: VK = new VK({
-    token: isTest ? TEST_TOKEN : TOKEN,
+    token: TOKEN,
     language: 'ru'
 });
-console.log(`[VK] bot inited with token ${isTest ? TEST_TOKEN : TOKEN}`)
+console.log(`[VK] bot inited with token ${TOKEN}`)
 export const connector: AsyncDataBaseConnector = new AsyncDataBaseConnector("./db/data.db", "vk");
 
 

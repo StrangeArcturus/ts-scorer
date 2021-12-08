@@ -1,8 +1,18 @@
 import { vk } from './bot';
 
+const mode = process.argv[2];
+
 
 (async (): Promise<void> => {
-    await vk.updates.start();
+    if (mode === "--VK")
+        await vk.updates.start();
+    else if (mode === "--TG")
+        {}
 })().then(
-    (): void => console.log(`[VK] started polling`)
+    (): void => {
+        if (mode === "--VK")
+            console.log(`[VK] started polling`);
+        else if (mode === "--TG")
+            {}
+    }
 );

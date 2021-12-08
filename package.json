@@ -4,8 +4,8 @@
   "description": "scorer in typescript realisation",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts",
-    "test": "ts-node index.ts --test"
+    "start-vk": "ts-node index.ts --VK",
+    "start-tg": "ts-node index.ts --TG"
   },
   "repository": {
     "type": "git",

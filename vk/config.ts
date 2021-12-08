@@ -1,4 +1,3 @@
 require('dotenv');
 
-export const TOKEN: string | undefined | any = process.env?.TOKEN;
-export const TEST_TOKEN: string | undefined | any = process.env?.TEST_TOKEN;
+export const TOKEN_VK: string | undefined | any = process.env?.TOKEN;
