@@ -19,13 +19,14 @@
   "homepage": "https://github.com/StrangeArcturus/ts-scorer#readme",
   "dependencies": {
     "@types/node": "^16.11.11",
-    "dotenv": "^10.0.0",
-    "sqlite3": "^5.0.2",
     "@types/sqlite3": "^3.1.7",
-    "vk-io": "^4.4.0",
-    "typescript": "^4.5.0",
+    "dotenv": "^10.0.0",
+    "puregram": "^2.3.1",
+    "sqlite3": "^5.0.2",
     "ts-node": "^10.4.0",
-    "tsc": "^4.3.5"
+    "tsc": "^4.3.5",
+    "typescript": "^4.5.0",
+    "vk-io": "^4.4.0"
   },
   "devDependencies": {
     "@types/sqlite3": "^3.1.7"

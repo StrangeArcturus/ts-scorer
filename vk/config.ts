@@ -1,3 +1,6 @@
 require('dotenv');
 
-export const TOKEN_VK   : string | undefined | any = process.env?.TOKEN;
+/**
+ * `TOKEN` for vk-io variant of bot
+ */
+export const TOKEN_VK: string | undefined | any = process.env?.TOKEN;

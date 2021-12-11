@@ -105,6 +105,8 @@ dist
 
 # sqlite database
 db/data.db
+vk/db/data.db
+telegram/db/data.db
 
 # test dir
 test/
