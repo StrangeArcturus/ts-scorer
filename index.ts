@@ -1,15 +1,15 @@
-import { vk } from './vk/bot';
-import { bot } from './telegram/bot'
-
-
 const mode = process.argv[2].toUpperCase();
 
 
 (async (): Promise<void> => {
-    if (mode === "--VK")
+    if (mode === "--VK") {
+        const { vk } = require('./vk/bot');
         await vk.updates.start();
-    else if (mode === "--TG")
+    }
+    else if (mode === "--TG") {
+        const { bot } = require('./telegram/bot');
         await bot.updates.startPolling();
+    }
 })().then(
     (): void => {
         if (mode === "--VK")

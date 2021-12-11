@@ -47,7 +47,7 @@ export class AsyncDataBaseConnector {
         this.db_prefix = db_prefix;
         this.log_prefix = "[SQLite]";
         this.sqlite3 = verbose();
-        this.db = new Database('./test.db', error => error ? console.error(error) : {});
+        this.db = new Database(path_to_db, error => error ? console.error(error) : {});
         let _path: string = path_to_db.split("/").slice(0, -1).join("/");
         mkdir(_path, { recursive: true }, error => error ? console.error(error) : console.log(`path to db maked successfully`));
         console.log(`${this.log_prefix} inited Connector with path ${path_to_db}`);
