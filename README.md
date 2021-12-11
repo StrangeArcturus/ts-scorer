@@ -8,9 +8,9 @@
 ### Запуск
 Для запуска бота Вконтакте
 ```
-npm start-vk
+npm run start-vk
 ```
 Для запуска в Телеграм
 ```
-npm start-tg
+npm run start-tg
 ```
